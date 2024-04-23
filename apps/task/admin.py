@@ -1,3 +1,5 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Task, Section, Objective
+
+admin.site.register([Task, Section, Objective])
