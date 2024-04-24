@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from task.models import Section
 
 from django.contrib.auth.models import (
     AbstractBaseUser,
@@ -23,8 +24,17 @@ class UserManager(BaseUserManager):
             username=username,
             **extra_fields
         )
+
         user.set_password(password)
         user.save(using=self._db)
+
+        for i in range(1, 6):
+            Section.objects.create(
+                user=user,
+                name=f'Sección {i}',
+                description=f'Descripción de la Sección {i}',
+            )
+
         return user
 
     def create_superuser(

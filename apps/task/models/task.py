@@ -5,6 +5,11 @@ from .objetives import Objective
 
 
 class Task(models.Model):
-    objective = models.ForeignKey(Objective, on_delete=models.CASCADE)
-    name = models.CharField(max_length=100)
-    description = models.TextField()
+    objective: Objective = models.ForeignKey(
+        Objective, on_delete=models.CASCADE
+        )
+    name: str = models.CharField(max_length=100)
+    description: str = models.TextField()
+
+    def __str__(self):
+        return f'{self.name} - {self.objective}'
