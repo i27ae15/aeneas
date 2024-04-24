@@ -1,3 +1,5 @@
+import datetime
+
 from django.db import models
 from django.utils import timezone
 from task.models import Section
@@ -16,10 +18,10 @@ class UserManager(BaseUserManager):
         username: str,
         password: str,
         **extra_fields
-    ):
+    ) -> 'CustomUser':
         email = self.normalize_email(email)
 
-        user = self.model(
+        user: CustomUser = self.model(
             email=email,
             username=username,
             **extra_fields
@@ -43,7 +45,7 @@ class UserManager(BaseUserManager):
         email: str,
         password: str,
         **extra_fields
-    ):
+    ) -> 'CustomUser':
         user = self.create_user(
             email=email,
             username=username,
@@ -81,15 +83,18 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         default=''
     )
 
-    is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
-    is_tester = models.BooleanField(default=False)
+    is_active: bool = models.BooleanField(default=True)
+    is_staff: bool = models.BooleanField(default=False)
+    is_tester: bool = models.BooleanField(default=False)
+    is_admin: bool = models.BooleanField(default=False)
 
-    objects = UserManager()
+    objects: UserManager = UserManager()
 
-    registration_date = models.DateTimeField(default=timezone.now)
+    registration_date: datetime.datetime = models.DateTimeField(
+        default=timezone.now
+    )
 
-    username = models.CharField(max_length=255, unique=True)
+    username: str = models.CharField(max_length=255, unique=True)
 
     # USER PERMISSIONS
     USERNAME_FIELD = "email"
@@ -101,10 +106,12 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     # functions
     # -------------------------------------------------------------------
 
-    def get_full_name(self):
+    @property
+    def get_full_name(self) -> str:
         return f"{self.first_name} {self.last_name}"
 
-    def get_short_name(self):
+    @property
+    def get_short_name(self) -> str:
         return self.username
 
     def has_perm(self, perm, obj=None):

@@ -24,4 +24,3 @@ class TestSection(TestCase):
         self.assertEqual(self.section_A.user, self.user_A)
         self.assertEqual(self.section_A.name, 'Test Section')
         self.assertEqual(self.section_A.description, 'Test Description')
-
