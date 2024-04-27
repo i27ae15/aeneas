@@ -1,6 +1,7 @@
 from django.urls import path
 from users.views import (
-    UserLoginAPIView, UserCreateAPIView, CheckIfEmailExistAPIView
+    UserLoginAPIView, UserCreateAPIView, CheckIfEmailExistAPIView,
+    CheckIfUserNameExistAPIView
 )
 
 urlpatterns = [
@@ -10,5 +11,10 @@ urlpatterns = [
         'check_if_email_exists/',
         CheckIfEmailExistAPIView.as_view(),
         name='check_if_email_exists'
+    ),
+    path(
+        'check_if_username_exist/',
+        CheckIfUserNameExistAPIView.as_view(),
+        name='check_if_username_exist'
     )
 ]

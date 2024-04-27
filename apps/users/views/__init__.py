@@ -1,8 +1,11 @@
-from .register import UserCreateAPIView, CheckIfEmailExistAPIView
+from .register import (
+    UserCreateAPIView, CheckIfEmailExistAPIView, CheckIfUserNameExistAPIView
+    )
 from .login import UserLoginAPIView
 
 __all__ = [
     'UserCreateAPIView',
     'UserLoginAPIView',
-    'CheckIfEmailExistAPIView'
+    'CheckIfEmailExistAPIView',
+    'CheckIfUserNameExistAPIView'
 ]
