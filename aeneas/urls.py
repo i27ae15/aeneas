@@ -9,6 +9,7 @@ urlpatterns = [
 
     # Project apps
     path("user/api/", include("users.urls")),
+    path("task/api/", include("task.urls")),
 
     # Third party apps
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),

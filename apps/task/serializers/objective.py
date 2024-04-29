@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from apps.task.models import Objective
+from task.models import Objective
 
 
 class ObjectiveSerializer(serializers.ModelSerializer):

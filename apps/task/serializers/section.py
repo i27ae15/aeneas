@@ -1,8 +1,8 @@
 from rest_framework import serializers
-from apps.task.models import section
+from task.models.section import Section
 
 
 class SectionSerializer(serializers.ModelSerializer):
     class Meta:
-        model = section
+        model = Section
         fields = '__all__'
