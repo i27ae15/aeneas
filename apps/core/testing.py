@@ -1,10 +1,12 @@
 import sys
 
 from django.utils import timezone
+from django.db.models import Model
+from django.db.models.fields.related import (
+    ManyToManyField
+)
 
 from faker import Faker
-
-from django.db.models import Model
 
 
 class BColors:
@@ -38,6 +40,7 @@ class ModelCreation():
         objects_to_create: int = 1,
         fields_to_avoid: list[str] = ['id'],
         related_objects: dict = None,
+        default_values: dict = None,
         func_to_call=None,
         faker_seed: int = 115
     ) -> None:
@@ -88,6 +91,7 @@ class ModelCreation():
         self.objects_to_create: int = objects_to_create
         self.fields_to_avoid: list[str] = fields_to_avoid
         self.related_objects: dict = related_objects or dict()
+        self.default_values: dict = default_values or dict()
         self.func_to_call = func_to_call or self.model.objects.create
 
         self.fields_and_types: dict = self._get_fields_and_types()
@@ -102,9 +106,10 @@ class ModelCreation():
         Returns:
             dict[str, str]: Dictionary of field names and data types.
         """
+
         fields_and_types = {
             field.name: field.get_internal_type()
-            for field in self.model._meta.get_fields()
+            for field in self.model._meta.local_fields
             if field.name not in self.fields_to_avoid
         }
 
@@ -117,7 +122,7 @@ class ModelCreation():
         on predefined rules or related objects.
 
         Returns:
-            list[dict]: Data for each model instance to be created.
+            list[dict]: Data for each model nstance to be created.
         """
 
         information = []
@@ -131,7 +136,10 @@ class ModelCreation():
                 else:
                     func_info = FIELDS.get(field_type, None)
                     if func_info:
-                        data[field] = func_info()
+                        if field in self.default_values:
+                            data[field] = self.default_values[field]
+                        else:
+                            data[field] = func_info()
                     else:
                         # this mean this should be a related field
                         # check if the field is in the related_objects
@@ -141,6 +149,7 @@ class ModelCreation():
                             data[field] = self.related_objects[field]
                         else:
                             data[field] = None
+
             information.append(data)
         return information
 
@@ -153,14 +162,33 @@ class ModelCreation():
             list[Model]: List of newly created model instances.
         """
 
-        objects = []
+        objects = list()
+        many_to_many = dict()
+
+        # in related objects, get the many to many fields if there are any
+
+        # check each key in related objects to check which are
+        # many to many
+
+        for key, _ in self.related_objects.items():
+            field = self.model._meta.get_field(key)
+            if isinstance(field, ManyToManyField):
+                many_to_many[key] = field
 
         for current in range(self.objects_to_create):
-            objects.append(
-                self.func_to_call(
-                    **self.information[current]
-                )
+
+            instance = self.func_to_call(
+                **self.information[current]
             )
+            objects.append(instance)
+
+            # add the many to many fields
+            for key, _ in many_to_many.items():
+
+                m2m_manager = getattr(instance, key)
+
+                for obj in self.related_objects[key]:
+                    m2m_manager.add(obj)
 
         return objects
 
