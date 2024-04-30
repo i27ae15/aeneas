@@ -1,4 +1,5 @@
 import datetime
+from typing import Any
 
 from django.db import models
 from django.utils import timezone
@@ -19,6 +20,7 @@ class UserManager(BaseUserManager):
         password: str,
         **extra_fields
     ) -> 'CustomUser':
+
         email = self.normalize_email(email)
 
         user: CustomUser = self.model(
