@@ -1,4 +1,0 @@
-GET -> Obtener informacion -> El front le pide informacion al backend
-POST -> Crear informacion -> Crear informacion
-PUT -> Actualiza informacion -> Manda informacion al backend para ser actualizada
-DELETE -> Borrar informacion

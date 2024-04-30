@@ -47,4 +47,3 @@ class UserLoginAPIView(APIView):
 
         token, _ = Token.objects.get_or_create(user=user)
         return Response({'token': token.key}, status=status.HTTP_200_OK)
-
