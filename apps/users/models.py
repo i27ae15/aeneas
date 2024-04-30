@@ -1,5 +1,4 @@
 import datetime
-from typing import Any
 
 from django.db import models
 from django.utils import timezone
