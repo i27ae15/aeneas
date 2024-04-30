@@ -190,4 +190,3 @@ def print_warning(text):
 
 def print_error(text):
     print(f'{BColors.FAIL}{text}{BColors.ENDC}')
-
