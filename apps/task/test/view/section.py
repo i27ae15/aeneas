@@ -49,7 +49,6 @@ class SectionAPIViewTest(APITestCase):
         self.client.force_authenticate(user=self.user)
         url = reverse('task:section')
         response = self.client.get(url)
-        print(response.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_noexiste_section(self):
@@ -94,3 +93,23 @@ class SectionAPIViewTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     # DELETE
+    def test_section_delete(self):
+        pk = self.section.pk
+        self.client.force_authenticate(user=self.user)
+        url = reverse('task:section', kwargs={'pk': pk})
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(Section.objects.filter(pk=pk).exists())
+
+    def test_DELETE_dont_exist_404(self):
+        url = reverse('task:section', kwargs={'pk': 9999})
+        self.client.force_authenticate(user=self.user)
+        response = self.client.put(url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_DELETE_created_204(self):
+        pk = self.section.pk
+        self.client.force_authenticate(user=self.user)
+        url = reverse('task:section', kwargs={'pk': pk})
+        response = self.client.delate(url)
+        self.assertEqual(response.status_code, 204)
