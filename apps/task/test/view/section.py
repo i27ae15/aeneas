@@ -28,6 +28,11 @@ class SectionAPIViewTest(APITestCase):
             'name': 'section_new',
             'description': 'section_de_prueba'
         }
+        self.dataSU = {
+            'user': self.user.id,
+            'name': 'section_update_name',
+            'description': 'section_de_prueba'
+        }
 
     # GET
     def test_get_single_section(self):
@@ -55,14 +60,37 @@ class SectionAPIViewTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     # POST
-    def test_created_201(self):
+    def test_POST_created_201(self):
         self.client.force_authenticate(user=self.user)
         url = reverse('task:section')
         response = self.client.post(url, self.dataST, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-    def test_bad_request_400(self):
+    def test_POST_bad_request_400(self):
         self.client.force_authenticate(user=self.user)
         url = reverse('task:section')
         response = self.client.post(url, self.dataSF, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    # PUT
+    def test_PUT_ok_200(self):
+        pk = self.section.pk
+        url = reverse('task:section', kwargs={'pk': pk})
+        self.client.force_authenticate(user=self.user)
+        response = self.client.put(url, self.dataSU, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_PUT_dont_exist_404(self):
+        url = reverse('task:section', kwargs={'pk': 9999})
+        self.client.force_authenticate(user=self.user)
+        response = self.client.put(url, self.dataSU, format='json')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_PUT_bad_request_400(self):
+        pk = self.section.pk
+        self.client.force_authenticate(user=self.user)
+        url = reverse('task:section', kwargs={'pk': pk})
+        response = self.client.put(url, self.dataSF, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    # DELETE

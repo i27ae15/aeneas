@@ -34,3 +34,18 @@ class SectionAPIView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, pk):
+        try:
+            instance = Section.objects.get(pk=pk)
+        except Section.DoesNotExist:
+            return Response(
+                {"error": "Object does not exist"},
+                status=status.HTTP_404_NOT_FOUND
+                )
+
+        serializer = SectionSerializer(instance, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
