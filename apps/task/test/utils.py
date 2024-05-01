@@ -12,7 +12,7 @@ def create_section(
     related_objects = related_objects or {}
 
     model_creator = ModelCreation(
-        Section,
+        model=Section,
         objects_to_create=objects_to_create,
         faker_seed=faker_seed,
         related_objects=related_objects
@@ -30,7 +30,7 @@ def create_objective(
     related_objects = related_objects or {}
 
     model_creator = ModelCreation(
-        Objective,
+        model=Objective,
         objects_to_create=objects_to_create,
         faker_seed=faker_seed,
         related_objects=related_objects
@@ -49,7 +49,7 @@ def create_task(
     related_objects = related_objects or {}
 
     model_creator = ModelCreation(
-        Task,
+        model=Task,
         objects_to_create=objects_to_create,
         faker_seed=faker_seed,
         related_objects=related_objects,
