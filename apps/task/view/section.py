@@ -15,7 +15,7 @@ class SectionAPIView(APIView):
     def get(self, request, pk=None):
         if pk:
             try:
-                instance = Section.objects.get(pk=pk)
+                instance = Section.objects.get(pk=pk, user=request.user)
                 serializer = SectionSerializer(instance)
                 return Response(serializer.data)
             except Section.DoesNotExist:
@@ -24,7 +24,7 @@ class SectionAPIView(APIView):
                     status=status.HTTP_404_NOT_FOUND
                     )
         else:
-            queryset = Section.objects.all()
+            queryset = Section.objects.filter(user=request.user)
             serializer = SectionSerializer(queryset, many=True)
             return Response(serializer.data)
 
@@ -37,7 +37,7 @@ class SectionAPIView(APIView):
 
     def put(self, request, pk):
         try:
-            instance = Section.objects.get(pk=pk)
+            instance = Section.objects.get(pk=pk, user=request.user)
         except Section.DoesNotExist:
             return Response(
                 {"error": "Object does not exist"},
@@ -52,7 +52,7 @@ class SectionAPIView(APIView):
 
     def delete(self, request, pk):
         try:
-            instance = Section.objects.get(pk=pk)
+            instance = Section.objects.get(pk=pk, user=request.user)
         except Section.DoesNotExist:
             return Response(
                 {"error": "Object does not exist"},

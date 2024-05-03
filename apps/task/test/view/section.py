@@ -24,7 +24,7 @@ class SectionAPIViewTest(APITestCase):
             'description': 'section_de_prueba'
         }
         self.dataSF = {
-            'user': '9999999999999',
+            'user': '99999999666666666666',
             'name': 'section_new',
             'description': 'section_de_prueba'
         }
@@ -104,12 +104,12 @@ class SectionAPIViewTest(APITestCase):
     def test_DELETE_dont_exist_404(self):
         url = reverse('task:section', kwargs={'pk': 9999})
         self.client.force_authenticate(user=self.user)
-        response = self.client.put(url)
+        response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_DELETE_created_204(self):
         pk = self.section.pk
         self.client.force_authenticate(user=self.user)
         url = reverse('task:section', kwargs={'pk': pk})
-        response = self.client.delate(url)
-        self.assertEqual(response.status_code, 204)
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
