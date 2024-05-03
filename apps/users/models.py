@@ -19,6 +19,7 @@ class UserManager(BaseUserManager):
         password: str,
         **extra_fields
     ) -> 'CustomUser':
+
         email = self.normalize_email(email)
 
         user: CustomUser = self.model(
