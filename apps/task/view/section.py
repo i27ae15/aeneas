@@ -15,7 +15,7 @@ class SectionAPIView(APIView):
     def get(self, request, pk=None):
         if pk:
             try:
-                instance = Section.objects.get(pk=pk)
+                instance = Section.objects.get(pk=pk, user=request.user)
                 serializer = SectionSerializer(instance)
                 return Response(serializer.data)
             except Section.DoesNotExist:
@@ -24,6 +24,40 @@ class SectionAPIView(APIView):
                     status=status.HTTP_404_NOT_FOUND
                     )
         else:
-            queryset = Section.objects.all()
+            queryset = Section.objects.filter(user=request.user)
             serializer = SectionSerializer(queryset, many=True)
             return Response(serializer.data)
+
+    def post(self, request):
+        serializer = SectionSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, pk):
+        try:
+            instance = Section.objects.get(pk=pk, user=request.user)
+        except Section.DoesNotExist:
+            return Response(
+                {"error": "Object does not exist"},
+                status=status.HTTP_404_NOT_FOUND
+                )
+
+        serializer = SectionSerializer(instance, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        try:
+            instance = Section.objects.get(pk=pk, user=request.user)
+        except Section.DoesNotExist:
+            return Response(
+                {"error": "Object does not exist"},
+                status=status.HTTP_404_NOT_FOUND
+                )
+
+        instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
